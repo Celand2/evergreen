@@ -11,6 +11,7 @@
                 <th class="px-4 py-2 text-left">Referred User</th>
                 <th class="px-4 py-2 text-left">Level</th>
                 <th class="px-4 py-2 text-left">Commission</th>
+                <th class="px-4 py-2 text-left">Local Commission</th>
                 <th class="px-4 py-2 text-left">Date</th>
                 <th class="px-4 py-2 text-left">Actions</th>
             </tr>
@@ -26,6 +27,9 @@
                         </span>
                     </td>
                     <td class="px-4 py-2">${{ number_format($referral->commission, 2) }}</td>
+                    <td class="px-4 py-2">
+                        {{ $referral->referrer?->currency ? $referral->referrer->toLocal($referral->commission) : '-' }}
+                    </td>
                     <td class="px-4 py-2">{{ $referral->created_at->format('Y-m-d') }}</td>
                     <td class="px-4 py-2">
                         <form action="{{ route('admin.referrals.destroy', $referral) }}" method="POST" class="inline">

@@ -1,82 +1,128 @@
 @extends('layouts.client')
 
 @section('content')
-<div class="bg-white rounded-lg shadow p-6">
-    <h2 class="text-2xl font-bold mb-6">Make a Deposit</h2>
-    
-    <form action="{{ route('client.deposits.store') }}" method="POST" enctype="multipart/form-data" class="mb-8">
+
+{{-- Form --}}
+<div class="rounded-xl p-4 mb-4 border border-gray-700"
+     style="background: radial-gradient(ellipse at top right, rgba(164,251,3,0.07) 0%, #1f2937 80%);">
+    <h2 class="text-white font-semibold text-sm mb-4">Make a Deposit</h2>
+
+    <form action="{{ route('client.deposits.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        
-        <div class="mb-4">
-            <label for="payment_method_id" class="block text-gray-700 text-sm font-bold mb-2">Payment Method</label>
-            <select name="payment_method_id" id="payment_method_id" required
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
-                <option value="">Select Payment Method</option>
+
+        {{-- Payment Method --}}
+        <div class="mb-3">
+            <label class="block text-gray-400 text-[11px] mb-1">Payment Method</label>
+            <select name="payment_method_id" id="payment-method-select" required
+                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#a4fb03] transition"
+                onchange="updateDepositDetails()">
+                <option value="">Select a method</option>
                 @foreach($paymentMethods as $method)
-                    <option value="{{ $method->id }}">{{ $method->name }}</option>
+                    <option value="{{ $method->id }}"
+                        data-rate="{{ optional($method->exchangeRate)->rate_to_usd ?? 1 }}"
+                        data-currency="{{ optional($method->exchangeRate)->currency ?? ($user->currency ?? 'USD') }}"
+                        data-account-number="{{ $method->account_number }}"
+                        data-account-name="{{ $method->account_name }}">
+                        {{ $method->name }}
+                    </option>
                 @endforeach
             </select>
         </div>
 
+        <div class="mb-3 text-xs text-gray-500">
+            <p id="deposit-account-number">Account: -</p>
+            <p id="deposit-account-name">Name: -</p>
+            <p id="deposit-currency">Currency: {{ $user->currency ?? 'Select a method' }}</p>
+        </div>
+
+        <input type="hidden" name="currency" id="deposit-currency-input" value="{{ $user->currency ?? '' }}">
+
+        {{-- Amount Local --}}
+        <div class="mb-3">
+            <label class="block text-gray-400 text-[11px] mb-1">Amount in local currency</label>
+            <input type="number" name="amount_local" id="amount-local" step="0.01" min="1" required
+                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#a4fb03] transition"
+                placeholder="Enter amount in local currency"
+                oninput="updateDepositDetails()">
+        </div>
+
+        {{-- USD Equivalent --}}
+        <div class="mb-3">
+            <label class="block text-gray-400 text-[11px] mb-1">Equivalent in USD</label>
+            <div id="amount-usd-display"
+                class="w-full bg-gray-900 border border-gray-700 text-[#a4fb03] text-xs rounded-lg px-3 py-2">
+                $0.00 USD
+            </div>
+        </div>
+
+        {{-- Proof --}}
         <div class="mb-4">
-            <label for="amount_usd" class="block text-gray-700 text-sm font-bold mb-2">Amount (USD)</label>
-            <input type="number" name="amount_usd" id="amount_usd" step="0.01" required
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+            <label class="block text-gray-400 text-[11px] mb-1">Payment Proof (image)</label>
+            <input type="file" name="proof" accept="image/*"
+                class="w-full bg-gray-900 border border-gray-700 text-gray-400 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#a4fb03] transition">
         </div>
 
-        <div class="mb-4">
-            <label for="amount_local" class="block text-gray-700 text-sm font-bold mb-2">Amount (Local Currency)</label>
-            <input type="number" name="amount_local" id="amount_local" step="0.01" required
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-
-        <div class="mb-4">
-            <label for="currency" class="block text-gray-700 text-sm font-bold mb-2">Currency</label>
-            <input type="text" name="currency" id="currency" maxlength="3" required
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-
-        <div class="mb-6">
-            <label for="proof" class="block text-gray-700 text-sm font-bold mb-2">Payment Proof (Image)</label>
-            <input type="file" name="proof" id="proof" accept="image/*"
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-
-        <button type="submit" 
-            class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition">
-            💰 Submit Deposit
+        <button type="submit"
+            class="w-full bg-[#a4fb03] text-gray-900 text-xs font-semibold py-2.5 rounded-lg hover:opacity-90 transition">
+            Submit Deposit
         </button>
     </form>
-
-    <h3 class="text-xl font-bold mb-4">Deposit History</h3>
-    <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-2 text-left">Date</th>
-                    <th class="px-4 py-2 text-left">Amount (USD)</th>
-                    <th class="px-4 py-2 text-left">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($deposits as $deposit)
-                    <tr class="border-b">
-                        <td class="px-4 py-2">{{ $deposit->created_at->format('Y-m-d') }}</td>
-                        <td class="px-4 py-2">${{ number_format($deposit->amount, 2) }}</td>
-                        <td class="px-4 py-2">
-                            <span class="px-2 py-1 rounded text-xs font-semibold
-                                {{ $deposit->status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                   ($deposit->status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                {{ ucfirst($deposit->status) }}
-                            </span>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    <div class="mt-4">
-        {{ $deposits->links() }}
-    </div>
 </div>
+
+{{-- History --}}
+<div class="rounded-xl p-4 border border-gray-700"
+     style="background: radial-gradient(ellipse at bottom left, rgba(164,251,3,0.05) 0%, #1f2937 80%);">
+    <h3 class="text-white font-semibold text-sm mb-3">Deposit History</h3>
+
+    @forelse($deposits as $deposit)
+        <div class="flex justify-between items-center py-2 border-b border-gray-700 last:border-0">
+            <div>
+                <p class="text-white text-xs font-medium">
+                    @if(auth()->user()->currency)
+                        {{ auth()->user()->toLocal($deposit->amount_usd) }}
+                    @else
+                        ${{ number_format($deposit->amount_usd, 2) }} USD
+                    @endif
+                </p>
+                <p class="text-gray-500 text-[10px]">{{ $deposit->created_at->format('d M Y') }}</p>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-1 rounded-full
+                {{ $deposit->status === 'approved' ? 'bg-[#a4fb03] text-gray-900' :
+                   ($deposit->status === 'rejected' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400') }}">
+                {{ ucfirst($deposit->status) }}
+            </span>
+        </div>
+    @empty
+        <p class="text-gray-500 text-xs text-center py-4">No deposits yet.</p>
+    @endforelse
+
+    <div class="mt-3">{{ $deposits->links() }}</div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+    function updateDepositDetails() {
+        const paymentSelect = document.getElementById('payment-method-select');
+        const selectedOption = paymentSelect?.options[paymentSelect.selectedIndex];
+        const rate = parseFloat(selectedOption?.dataset.rate) || 1;
+        const optionCurrency = selectedOption?.dataset.currency || '{{ $user->currency ?? 'USD' }}';
+        const currency = '{{ $user->currency ?? '' }}' || optionCurrency;
+        const accountNumber = selectedOption?.dataset.accountNumber || '-';
+        const accountName = selectedOption?.dataset.accountName || '-';
+        const localAmount = parseFloat(document.getElementById('amount-local')?.value) || 0;
+
+        document.getElementById('deposit-account-number').textContent = 'Account: ' + accountNumber;
+        document.getElementById('deposit-account-name').textContent = 'Name: ' + accountName;
+        document.getElementById('deposit-currency').textContent = 'Currency: ' + currency;
+
+        const usd = rate > 0 ? localAmount / rate : 0;
+        document.getElementById('amount-usd-display').textContent =
+            '$' + usd.toFixed(2) + ' USD';
+        document.getElementById('deposit-currency-input').value = currency;
+    }
+
+    document.addEventListener('DOMContentLoaded', updateDepositDetails);
+</script>
+@endpush

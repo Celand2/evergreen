@@ -13,6 +13,10 @@ class Withdrawal extends Model
         'user_id',
         'payment_method_id',
         'amount',
+        'amount_usd',
+        'amount_local',
+        'currency',
+        'rate_used',
         'fee',
         'amount_received',
         'account_number',
@@ -23,6 +27,9 @@ class Withdrawal extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'amount_usd' => 'decimal:2',
+        'amount_local' => 'decimal:2',
+        'rate_used' => 'decimal:6',
         'fee' => 'decimal:2',
         'amount_received' => 'decimal:2',
         'approved_at' => 'datetime',

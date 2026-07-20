@@ -13,14 +13,21 @@ class Deposit extends Model
         'user_id',
         'payment_method_id',
         'amount',
+        'amount_usd',
+        'amount_local',
+        'currency',
+        'rate_used',
         'status',
         'proof',
         'approved_at',
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
-        'approved_at' => 'datetime',
+        'amount'       => 'decimal:2',
+        'amount_usd'   => 'decimal:2',
+        'amount_local' => 'decimal:2',
+        'rate_used'    => 'decimal:6',
+        'approved_at'  => 'datetime',
     ];
 
     public function scopePending($query)

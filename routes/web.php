@@ -39,7 +39,8 @@ Route::middleware(['auth', 'isClient'])->prefix('client')->name('client.')->grou
     Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
     
     // VIPs
-    Route::get('/vips', [ClientVipController::class, 'index'])->name('vips.index');
+    Route::get('/vips', [ClientVipController::class, 'plans'])->name('vips.index');
+    Route::get('/vips/mes', [ClientVipController::class, 'mine'])->name('vips.mine');
     Route::post('/vips/{vip}/buy', [ClientVipController::class, 'buy'])->name('vips.buy');
     
     // Deposits

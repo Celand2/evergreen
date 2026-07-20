@@ -38,6 +38,7 @@
     <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded mb-6">
         <p class="text-sm text-gray-600">Total Commission Earned</p>
         <p class="text-2xl font-bold text-yellow-600">${{ number_format($stats['total_commission'], 2) }}</p>
+        <p class="text-sm text-gray-500">{{ auth()->user()->toLocal($stats['total_commission']) }}</p>
     </div>
 
     <!-- Referral Lists -->
@@ -52,6 +53,7 @@
                                 <th class="px-4 py-2 text-left">Name</th>
                                 <th class="px-4 py-2 text-left">Phone</th>
                                 <th class="px-4 py-2 text-left">Joined</th>
+                                <th class="px-4 py-2 text-left">Commission</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,6 +62,12 @@
                                     <td class="px-4 py-2">{{ $referral->referred->name }}</td>
                                     <td class="px-4 py-2">{{ $referral->referred->phone }}</td>
                                     <td class="px-4 py-2">{{ $referral->referred->created_at->format('Y-m-d') }}</td>
+                                    <td class="px-4 py-2">
+                                        <div class="space-y-1">
+                                            <div>${{ number_format($referral->commission, 2) }}</div>
+                                            <div class="text-xs text-gray-500">{{ auth()->user()->toLocal($referral->commission) }}</div>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

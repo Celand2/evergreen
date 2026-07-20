@@ -9,19 +9,23 @@ class WithdrawalService
 {
     public function process(User $user, array $data): Withdrawal
     {
-        $amount = $data['amount'];
-        $fee = $amount * 0.10;
-        $amountReceived = $amount * 0.90;
+        $amountUsd = $data['amount_usd'];
+        $fee = $amountUsd * 0.10;
+        $amountReceived = $amountUsd * 0.90;
 
         // Deduct from balance_retirable immediately
-        $user->balance_retirable -= $amount;
+        $user->balance_retirable -= $amountUsd;
         $user->save();
 
         // Create withdrawal
         return Withdrawal::create([
             'user_id' => $user->id,
             'payment_method_id' => $data['payment_method_id'],
-            'amount' => $amount,
+            'amount' => $amountUsd,
+            'amount_usd' => $amountUsd,
+            'amount_local' => $data['amount_local'],
+            'currency' => $data['currency'],
+            'rate_used' => $data['rate_used'],
             'fee' => $fee,
             'amount_received' => $amountReceived,
             'account_number' => $data['account_number'],

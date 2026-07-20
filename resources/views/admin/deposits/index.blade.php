@@ -19,7 +19,12 @@
             @foreach($deposits as $deposit)
                 <tr class="border-b">
                     <td class="px-4 py-2">{{ $deposit->user->name }}</td>
-                    <td class="px-4 py-2">${{ number_format($deposit->amount, 2) }}</td>
+                    <td class="px-4 py-2">
+                        ${{ number_format($deposit->amount_usd, 2) }}
+                        @if($deposit->currency)
+                            / {{ number_format($deposit->amount_local, 2) }} {{ $deposit->currency }}
+                        @endif
+                    </td>
                     <td class="px-4 py-2">{{ $deposit->paymentMethod->name ?? 'N/A' }}</td>
                     <td class="px-4 py-2">
                         <span class="px-2 py-1 rounded text-xs font-semibold

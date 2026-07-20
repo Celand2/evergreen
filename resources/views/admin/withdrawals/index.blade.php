@@ -21,9 +21,24 @@
             @foreach($withdrawals as $withdrawal)
                 <tr class="border-b">
                     <td class="px-4 py-2">{{ $withdrawal->user->name }}</td>
-                    <td class="px-4 py-2">${{ number_format($withdrawal->amount, 2) }}</td>
-                    <td class="px-4 py-2">${{ number_format($withdrawal->fee, 2) }}</td>
-                    <td class="px-4 py-2">${{ number_format($withdrawal->amount_received, 2) }}</td>
+                    <td class="px-4 py-2">
+                        ${{ number_format($withdrawal->amount_usd, 2) }}
+                        @if($withdrawal->currency)
+                            / {{ number_format($withdrawal->amount_local, 2) }} {{ $withdrawal->currency }}
+                        @endif
+                    </td>
+                    <td class="px-4 py-2">
+                        ${{ number_format($withdrawal->fee, 2) }}
+                        @if($withdrawal->currency)
+                            / {{ number_format($withdrawal->amount_local * 0.10, 2) }} {{ $withdrawal->currency }}
+                        @endif
+                    </td>
+                    <td class="px-4 py-2">
+                        ${{ number_format($withdrawal->amount_received, 2) }}
+                        @if($withdrawal->currency)
+                            / {{ number_format($withdrawal->amount_local * 0.90, 2) }} {{ $withdrawal->currency }}
+                        @endif
+                    </td>
                     <td class="px-4 py-2">{{ $withdrawal->paymentMethod->name ?? 'N/A' }}</td>
                     <td class="px-4 py-2">
                         <span class="px-2 py-1 rounded text-xs font-semibold

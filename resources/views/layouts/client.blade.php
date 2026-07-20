@@ -81,12 +81,22 @@
                     <span class="text-[10px]">Home</span>
                 </a>
 
-                {{-- Invest --}}
-                <a href="{{ route('client.vips.index') }}" class="flex flex-col items-center gap-0.5 p-2 {{ request()->routeIs('client.vips.*') ? 'text-primary' : 'text-gray-500' }}">
+                {{-- VIPs --}}
+                <a href="{{ route('client.vips.index') }}" class="flex flex-col items-center gap-0.5 p-2 {{ request()->routeIs('client.vips.index') ? 'text-primary' : 'text-gray-500' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 1.343-3 3 0 3 3 5 3 5s3-2 3-5c0-1.657-1.343-3-3-3z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636"/>
                     </svg>
-                    <span class="text-[10px]">Invest</span>
+                    <span class="text-[10px]">VIPs</span>
+                </a>
+
+                {{-- Mes VIPs --}}
+                <a href="{{ route('client.vips.mine') }}" class="flex flex-col items-center gap-0.5 p-2 {{ request()->routeIs('client.vips.mine') ? 'text-primary' : 'text-gray-500' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3"/>
+                    </svg>
+                    <span class="text-[10px]">Mes VIPs</span>
                 </a>
 
                 {{-- Team --}}

@@ -9,10 +9,17 @@ use Illuminate\Http\Request;
 
 class VipController extends Controller
 {
-    public function index()
+    public function plans()
     {
         $vips = Vip::where('is_active', true)->paginate(20);
         return view('client.vips.index', compact('vips'));
+    }
+
+    public function mine()
+    {
+        $user = auth()->user();
+        $activeVips = $user->userVips()->active()->with('vip')->get();
+        return view('client.vips.mine', compact('activeVips'));
     }
 
     public function buy(Request $request, Vip $vip)
@@ -43,6 +50,6 @@ class VipController extends Controller
             'status' => 'active',
         ]);
 
-        return redirect()->route('client.vips.index')->with('success', 'VIP purchased successfully!');
+        return redirect()->route('client.vips.mine')->with('success', 'VIP purchased successfully!');
     }
 }

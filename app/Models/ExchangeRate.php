@@ -25,24 +25,37 @@ class ExchangeRate extends Model
     }
 
     // Convertir USD → local
-    public static function toLocal(float $usd, string $currency): float
+    public function toLocal(float $usd): string
     {
-        $rate = self::where('currency', $currency)
-                    ->where('is_active', true)
-                    ->latest()
-                    ->value('rate_to_usd');
+        if (!$this->currency) {
+            return '$' . number_format($usd, 2) . ' USD';
+        }
 
-        return $usd * $rate;
+        $rate = \App\Models\ExchangeRate::where('currency', $this->currency)
+            ->where('is_active', true)
+            ->latest()
+            ->value('rate_to_usd');
+
+        if (!$rate) {
+            return '$' . number_format($usd, 2) . ' USD';
+        }
+
+        $local = $usd * $rate;
+        return number_format($local, 2) . ' ' . $this->currency;
     }
 
     // Convertir local → USD
     public static function toUsd(float $local, string $currency): float
     {
         $rate = self::where('currency', $currency)
-                    ->where('is_active', true)
-                    ->latest()
-                    ->value('rate_to_usd');
+            ->where('is_active', true)
+            ->latest()
+            ->value('rate_to_usd');
 
         return $local / $rate;
+    }
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

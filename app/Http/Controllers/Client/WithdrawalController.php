@@ -21,17 +21,28 @@ class WithdrawalController extends Controller
     {
         $validated = $request->validate([
             'payment_method_id' => ['required', 'exists:payment_methods,id'],
-            'amount' => ['required', 'numeric', 'min:10'],
+            'amount_local' => ['required', 'numeric', 'min:1'],
+            'currency' => ['required', 'string'],
             'account_number' => ['required', 'string'],
             'account_name' => ['required', 'string'],
         ]);
 
         $user = auth()->user();
+        $paymentMethod = PaymentMethod::with('exchangeRate')->findOrFail($validated['payment_method_id']);
+        $exchangeRate = $paymentMethod->exchangeRate;
+        $rateUsed = $exchangeRate ? $exchangeRate->rate_to_usd : 1;
+        $amountUsd = $rateUsed > 0 ? $validated['amount_local'] / $rateUsed : 0;
 
-        // Check if user has enough balance_retirable
-        if ($user->balance_retirable < $validated['amount']) {
+        if ($amountUsd < 10) {
+            return back()->with('error', 'Withdrawal amount must be at least $10.00 USD.');
+        }
+
+        if ($user->balance_retirable < $amountUsd) {
             return back()->with('error', 'Insufficient balance.');
         }
+
+        $validated['amount_usd'] = $amountUsd;
+        $validated['rate_used'] = $rateUsed;
 
         app(WithdrawalService::class)->process($user, $validated);
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\ExchangeRate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,6 +24,7 @@ class User extends Authenticatable
         'referred_by',
         'balance_investissable',
         'balance_retirable',
+          'currency',  
         'preferred_payment_method_id',
     ];
 
@@ -106,10 +108,18 @@ class User extends Authenticatable
 
     public function toLocal(float $usd): string
     {
+        if (!$this->currency) {
+            return '$' . number_format($usd, 2) . ' USD';
+        }
+
         $rate = ExchangeRate::where('currency', $this->currency)
             ->where('is_active', true)
             ->latest()
             ->value('rate_to_usd');
+
+        if (!$rate || $rate == 0) {
+            return '$' . number_format($usd, 2) . ' USD';
+        }
 
         $local = $usd * $rate;
         return number_format($local, 2) . ' ' . $this->currency;

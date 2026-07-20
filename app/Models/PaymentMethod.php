@@ -25,4 +25,8 @@ class PaymentMethod extends Model
     {
         return $query->where('is_active', true);
     }
+    public function exchangeRate()
+{
+    return $this->hasOne(ExchangeRate::class)->where('is_active', true)->latest();
+}
 }
