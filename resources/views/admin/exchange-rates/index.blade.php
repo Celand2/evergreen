@@ -37,18 +37,19 @@
     </form>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-4 py-2 text-left">Currency</th>
-                <th class="px-4 py-2 text-left">Rate to USD</th>
-                <th class="px-4 py-2 text-left">Date</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="bg-white rounded-lg shadow">
+    <div class="overflow-x-auto">
+        <table class="min-w-[900px] w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left">Currency</th>
+                    <th class="px-4 py-2 text-left">Rate to USD</th>
+                    <th class="px-4 py-2 text-left">Date</th>
+                    <th class="px-4 py-2 text-left">Status</th>
+                    <th class="px-4 py-2 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach($exchangeRates as $rate)
                 <tr class="border-b">
                     <td class="px-4 py-2 font-semibold">{{ $rate->currency }}</td>
@@ -79,7 +80,8 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+        </table>
+    </div>
 </div>
 
 <div class="mt-4">

@@ -1,23 +1,24 @@
 @extends('layouts.admin')
 
-@section('title', 'Withdrawals Management')
+@section('title', 'Withdrawals')
 
 @section('content')
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-4 py-2 text-left">User</th>
-                <th class="px-4 py-2 text-left">Amount</th>
-                <th class="px-4 py-2 text-left">Fee</th>
-                <th class="px-4 py-2 text-left">Received</th>
-                <th class="px-4 py-2 text-left">Payment Method</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Date</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="bg-white rounded-lg shadow">
+    <div class="overflow-x-auto">
+        <table class="min-w-[900px] w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left">User</th>
+                    <th class="px-4 py-2 text-left">Amount</th>
+                    <th class="px-4 py-2 text-left">Fee</th>
+                    <th class="px-4 py-2 text-left">Received</th>
+                    <th class="px-4 py-2 text-left">Payment Method</th>
+                    <th class="px-4 py-2 text-left">Status</th>
+                    <th class="px-4 py-2 text-left">Date</th>
+                    <th class="px-4 py-2 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach($withdrawals as $withdrawal)
                 <tr class="border-b">
                     <td class="px-4 py-2">{{ $withdrawal->user->name }}</td>
@@ -68,7 +69,8 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+        </table>
+    </div>
 </div>
 
 <div class="mt-4">

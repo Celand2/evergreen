@@ -3,20 +3,21 @@
 @section('title', 'Users Management')
 
 @section('content')
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-4 py-2 text-left">Name</th>
-                <th class="px-4 py-2 text-left">Phone</th>
-                <th class="px-4 py-2 text-left">Country</th>
-                <th class="px-4 py-2 text-left">Balance Investable</th>
-                <th class="px-4 py-2 text-left">Balance Retirable</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="bg-white rounded-lg shadow">
+    <div class="overflow-x-auto">
+        <table class="min-w-[900px] w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left">Name</th>
+                    <th class="px-4 py-2 text-left">Phone</th>
+                    <th class="px-4 py-2 text-left">Country</th>
+                    <th class="px-4 py-2 text-left">Balance Investable</th>
+                    <th class="px-4 py-2 text-left">Balance Retirable</th>
+                    <th class="px-4 py-2 text-left">Status</th>
+                    <th class="px-4 py-2 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach($users as $user)
                 <tr class="border-b">
                     <td class="px-4 py-2">{{ $user->name }}</td>
@@ -41,7 +42,8 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+        </table>
+    </div>
 </div>
 
 <div class="mt-4">

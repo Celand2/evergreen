@@ -10,19 +10,20 @@
     </a>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-4 py-2 text-left">Name</th>
-                <th class="px-4 py-2 text-left">Price</th>
-                <th class="px-4 py-2 text-left">Daily %</th>
-                <th class="px-4 py-2 text-left">Duration</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="bg-white rounded-lg shadow">
+    <div class="overflow-x-auto">
+        <table class="min-w-[900px] w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left">Name</th>
+                    <th class="px-4 py-2 text-left">Price</th>
+                    <th class="px-4 py-2 text-left">Daily %</th>
+                    <th class="px-4 py-2 text-left">Duration</th>
+                    <th class="px-4 py-2 text-left">Status</th>
+                    <th class="px-4 py-2 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach($vips as $vip)
                 <tr class="border-b">
                     <td class="px-4 py-2">{{ $vip->name }}</td>
@@ -46,7 +47,8 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+        </table>
+    </div>
 </div>
 
 <div class="mt-4">

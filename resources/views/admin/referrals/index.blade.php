@@ -3,20 +3,21 @@
 @section('title', 'Referrals Management')
 
 @section('content')
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-4 py-2 text-left">Referrer</th>
-                <th class="px-4 py-2 text-left">Referred User</th>
-                <th class="px-4 py-2 text-left">Level</th>
-                <th class="px-4 py-2 text-left">Commission</th>
-                <th class="px-4 py-2 text-left">Local Commission</th>
-                <th class="px-4 py-2 text-left">Date</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="bg-white rounded-lg shadow">
+    <div class="overflow-x-auto">
+        <table class="min-w-[900px] w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left">Referrer</th>
+                    <th class="px-4 py-2 text-left">Referred User</th>
+                    <th class="px-4 py-2 text-left">Level</th>
+                    <th class="px-4 py-2 text-left">Commission</th>
+                    <th class="px-4 py-2 text-left">Local Commission</th>
+                    <th class="px-4 py-2 text-left">Date</th>
+                    <th class="px-4 py-2 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach($referrals as $referral)
                 <tr class="border-b">
                     <td class="px-4 py-2">{{ $referral->referrer->name ?? 'N/A' }}</td>
@@ -41,7 +42,8 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+        </table>
+    </div>
 </div>
 
 <div class="mt-4">
