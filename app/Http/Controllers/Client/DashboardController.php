@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         $todayEarnings = $user->dailyGains()->whereDate('date', today())->sum('amount_usd')
-            + ($user->hasCheckedInToday() ? 0.5 : 0);
+            + ($user->hasCheckedInToday() ? 0.025 : 0);
 
         $totalEarnings = $user->dailyGains()->sum('amount_usd')
             + $user->checkIns()->sum('amount')
@@ -36,6 +36,9 @@ class DashboardController extends Controller
             'total_earnings'        => $totalEarnings,
             'unread_count'          => $user->notifications()->unread()->count(),
             'latest_activity'       => $latestActivity,
+            'current_tier'          => $user->currentSponsorTier(),
+            'active_referrals_count' => $user->activeReferralsCount(),
+            'next_tier'             => $user->currentSponsorTier()->nextTier(),
         ];
 
         return view('client.dashboard', $data);

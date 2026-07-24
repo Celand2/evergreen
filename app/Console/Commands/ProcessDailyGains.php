@@ -2,52 +2,30 @@
 
 namespace App\Console\Commands;
 
-use App\Models\UserVip;
-use App\Models\DailyGain;
+use App\Services\DailyGainService;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 
 class ProcessDailyGains extends Command
 {
-    protected $signature = 'daily:process-gains';
+    protected $signature = 'daily:process-gains {--date= : Date to process (YYYY-MM-DD)}';
     protected $description = 'Process daily gains for all active VIPs';
 
-    public function handle(): void
+    public function handle(DailyGainService $dailyGainService): int
     {
-        $today = Carbon::today();
-        
-        // Get all active user_vips
-        $activeUserVips = UserVip::active()->get();
-        
-        foreach ($activeUserVips as $userVip) {
-            // Check if daily gain already exists for today
-            $hasGainToday = DailyGain::where('user_vip_id', $userVip->id)
-                ->whereDate('date', $today)
-                ->exists();
-            
-            if (!$hasGainToday) {
-                // Create daily gain
-                $dailyGainAmount = $userVip->vip->calculateDailyGain($userVip->amount_invested);
-                
-                DailyGain::create([
-                    'user_id' => $userVip->user_id,
-                    'user_vip_id' => $userVip->id,
-                    'amount' => $dailyGainAmount,
-                    'date' => $today,
-                ]);
-                
-                // Add to user's balance_retirable
-                $user = $userVip->user;
-                $user->balance_retirable += $dailyGainAmount;
-                $user->save();
-            }
+        try {
+            $date = $this->option('date')
+                ? Carbon::createFromFormat('Y-m-d', $this->option('date'))->startOfDay()
+                : Carbon::today();
+        } catch (\Throwable) {
+            $this->error('The --date option must use the YYYY-MM-DD format.');
+
+            return self::FAILURE;
         }
-        
-        // Expire user_vips where expires_at < today
-        UserVip::where('status', 'active')
-            ->where('expires_at', '<', $today)
-            ->update(['status' => 'expired']);
-        
-        $this->info('Daily gains processed successfully.');
+
+        $processed = $dailyGainService->process($date);
+        $this->info("Daily gains processed successfully: {$processed} credited.");
+
+        return self::SUCCESS;
     }
 }

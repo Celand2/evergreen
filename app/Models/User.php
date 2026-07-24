@@ -25,6 +25,7 @@ class User extends Authenticatable
         'balance_investissable',
         'balance_retirable',
           'currency',  
+                'lucky_wheel_available',
         'preferred_payment_method_id',
     ];
 
@@ -36,6 +37,7 @@ class User extends Authenticatable
     protected $casts = [
         'balance_investissable' => 'decimal:2',
         'balance_retirable' => 'decimal:2',
+        'lucky_wheel_available' => 'boolean',
     ];
 
     // Auth par téléphone
@@ -124,4 +126,24 @@ class User extends Authenticatable
         $local = $usd * $rate;
         return number_format($local, 2) . ' ' . $this->currency;
     }
+
+    public function activeReferralsCount(): int
+    {
+        return $this->referrals()
+            ->where('is_active', true)
+            ->where('level', 1)
+            ->count();
+    }
+
+    public function currentSponsorTier(): SponsorTier
+    {
+        return SponsorTier::forActiveCount($this->activeReferralsCount());
+    }
+
+    // Un user est "actif" comme filleul si dépôt total approuvé >= $5 OU VIP actif
+public function qualifiesAsActive(): bool
+{
+    $totalApprovedDeposits = $this->deposits()->approved()->sum('amount_usd');
+    return $totalApprovedDeposits >= 5 || $this->isVipActive();
+}
 }

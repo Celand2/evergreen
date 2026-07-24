@@ -1,8 +1,8 @@
 @extends('layouts.client')
 
 @section('content')
-<div class="rounded-xl p-4 mb-4 border border-gray-700"
-     style="background: radial-gradient(ellipse at top right, rgba(164,251,3,0.07) 0%, #1f2937 80%);">
+<div class="client-section rounded-xl p-4 mb-4 border border-gray-700"
+     style="background: radial-gradient(ellipse at top right, rgba(32,251,3,0.07) 0%, #1f2937 80%);">
     <h2 class="text-white font-semibold text-sm mb-4">Make a Withdrawal</h2>
     
     <form action="{{ route('client.withdrawals.store') }}" method="POST" class="mb-8">
@@ -11,7 +11,7 @@
         <div class="mb-3">
             <label for="payment_method_id" class="block text-gray-400 text-[11px] mb-1">Payment Method</label>
             <select name="payment_method_id" id="payment-method-id" required
-                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#a4fb03] transition"
+                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#20fb03] transition"
                 onchange="updateWithdrawalDetails()">
                 <option value="">Select Payment Method</option>
                 @foreach($paymentMethods as $method)
@@ -37,40 +37,40 @@
         <div class="mb-3">
             <label for="amount-local" class="block text-gray-400 text-[11px] mb-1">Amount in local currency</label>
             <input type="number" name="amount_local" id="amount-local" step="0.01" min="1" required
-                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#a4fb03] transition"
+                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#20fb03] transition"
                 placeholder="Enter amount in local currency"
                 oninput="updateWithdrawalDetails()">
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-xs text-gray-400">
-            <div class="bg-gray-900 border border-gray-700 rounded-lg p-3">
+            <div class="client-section bg-gray-900 border border-gray-700 rounded-lg p-3">
                 <p class="text-gray-500 mb-1">USD Equivalent</p>
                 <p id="withdrawal-usd" class="text-white">$0.00</p>
             </div>
-            <div class="bg-gray-900 border border-gray-700 rounded-lg p-3">
+            <div class="client-section bg-gray-900 border border-gray-700 rounded-lg p-3">
                 <p class="text-gray-500 mb-1">Fee (10%)</p>
                 <p id="withdrawal-fee" class="text-white">$0.00</p>
             </div>
-            <div class="bg-gray-900 border border-gray-700 rounded-lg p-3 md:col-span-2">
+            <div class="client-section bg-gray-900 border border-gray-700 rounded-lg p-3 md:col-span-2">
                 <p class="text-gray-500 mb-1">You receive</p>
-                <p id="withdrawal-received" class="text-[#a4fb03]">$0.00</p>
+                <p id="withdrawal-received" class="text-[#20fb03]">$0.00</p>
             </div>
         </div>
 
         <div class="mb-4">
             <label for="account_number" class="block text-gray-400 text-[11px] mb-1">Account Number</label>
             <input type="text" name="account_number" id="account_number" required
-                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#a4fb03] transition">
+                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#20fb03] transition">
         </div>
 
         <div class="mb-6">
             <label for="account_name" class="block text-gray-400 text-[11px] mb-1">Account Name</label>
             <input type="text" name="account_name" id="account_name" required
-                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#a4fb03] transition">
+                class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#20fb03] transition">
         </div>
 
         <button type="submit" 
-            class="w-full bg-[#a4fb03] text-gray-900 font-semibold py-2.5 rounded-lg hover:opacity-90 transition">
+            class="w-full bg-[#20fb03] text-gray-900 font-semibold py-2.5 rounded-lg hover:opacity-90 transition">
             💸 Request Withdrawal
         </button>
     </form>

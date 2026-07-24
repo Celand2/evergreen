@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Vip;
 use App\Models\UserVip;
+use App\Services\ReferralService;
 use Illuminate\Http\Request;
 
 class VipController extends Controller
@@ -26,29 +27,30 @@ class VipController extends Controller
     {
         $user = auth()->user();
 
-        // Check if user has enough balance_investissable
         if ($user->balance_investissable < $vip->price) {
             return back()->with('error', 'Insufficient balance.');
         }
 
-        // Deduct from balance_investissable
         $user->balance_investissable -= $vip->price;
         $user->save();
 
-        // Create user_vip
         $startedAt = now();
         $expiresAt = now()->addDays($vip->duration_days);
         $dailyGain = $vip->calculateDailyGain($vip->price);
 
-        UserVip::create([
-            'user_id' => $user->id,
-            'vip_id' => $vip->id,
+        $userVip = UserVip::create([
+            'user_id'         => $user->id,
+            'vip_id'          => $vip->id,
             'amount_invested' => $vip->price,
-            'daily_gain' => $dailyGain,
-            'started_at' => $startedAt,
-            'expires_at' => $expiresAt,
-            'status' => 'active',
+            'daily_gain'      => $dailyGain,
+            'duration_days'   => $vip->duration_days,
+            'started_at'      => $startedAt,
+            'expires_at'      => $expiresAt,
+            'status'          => 'active',
         ]);
+
+        // Un VIP actif peut activer le filleul dans le programme parrainage
+        app(ReferralService::class)->processVipActivation($userVip);
 
         return redirect()->route('client.vips.mine')->with('success', 'VIP purchased successfully!');
     }

@@ -18,7 +18,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'phone' => ['required', 'string'],
+            'phone'    => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
@@ -40,34 +40,60 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'unique:users,phone'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'referral_code' => ['nullable', 'string'],
+            'name'           => ['required', 'string', 'max:255'],
+            'phone'          => ['required', 'string', 'unique:users,phone'],
+            'email'          => ['nullable', 'email', 'max:255'],
+            'country'        => ['required', 'string', 'max:255'],
+            'password'       => ['required', 'string', 'min:8', 'confirmed'],
+            'referral_code'  => ['nullable', 'string'],
         ]);
 
-        $validated['password'] = bcrypt($validated['password']);
-        $validated['referral_code'] = Str::random(10);
-        $validated['role'] = 'user';
-        $validated['status'] = 'active';
-        $validated['balance_investissable'] = 0;
-        $validated['balance_retirable'] = 10; // Welcome offer
+        $referrerCode = $request->input('referral_code');
+        $registrationIp = $request->ip();
 
-        // Handle referral
-        if ($request->filled('referral_code')) {
-            $referrer = User::where('referral_code', $request->referral_code)->first();
+        $userData = [
+            'name'                   => $validated['name'],
+            'phone'                  => $validated['phone'],
+            'email'                  => $validated['email'] ?? null,
+            'country'                => $validated['country'],
+            'password'               => bcrypt($validated['password']),
+            'referral_code'          => Str::upper(Str::random(8)),
+            'role'                   => 'user',
+            'status'                 => 'active',
+            'balance_investissable'  => 0,
+            'balance_retirable'      => 0.5, // Welcome offer $0.5
+            'registration_ip'        => $registrationIp,
+        ];
+
+        // Gestion du parrainage
+        $referrer = null;
+        if ($referrerCode) {
+            $referrer = User::where('referral_code', $referrerCode)->first();
             if ($referrer) {
-                $validated['referred_by'] = $referrer->id;
+                $userData['referred_by'] = $referrer->id;
             }
         }
 
-        $user = User::create($validated);
+        $user = User::create($userData);
+
+        // Anti-fraude : même IP que le parrain à l'inscription → gel du parrain
+        if ($referrer && $referrer->registration_ip && $referrer->registration_ip === $registrationIp) {
+            $referrer->update(['is_frozen' => true]);
+
+            \App\Models\Notification::create([
+                'user_id' => $referrer->id,
+                'title'   => 'Account under review',
+                'body'    => 'Suspicious activity detected on your referral network. Your account has been temporarily frozen pending review.',
+            ]);
+        }
 
         Auth::login($user);
 
-        return redirect('/client/dashboard')->with('success', 'Welcome! You received a $10 welcome bonus.');
+        $welcomeMessage = $user->currency
+            ? 'Welcome! You received a ' . $user->toLocal(0.5) . ' welcome bonus.'
+            : 'Welcome! You received a $0.50 USD welcome bonus.';
+
+        return redirect('/client/dashboard')->with('success', $welcomeMessage);
     }
 
     public function logout(Request $request)

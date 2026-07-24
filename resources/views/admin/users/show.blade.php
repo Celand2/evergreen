@@ -42,6 +42,22 @@
             <p class="text-sm text-gray-600">Referral Code</p>
             <p class="font-semibold">{{ $user->referral_code }}</p>
         </div>
+        <div>
+            <p class="text-sm text-gray-600">Active Referrals</p>
+            <p class="font-semibold">{{ $user->activeReferralsCount() }}</p>
+        </div>
+        <div>
+            <p class="text-sm text-gray-600">Sponsor Tier</p>
+            <p class="font-semibold">{{ $user->currentSponsorTier()->name }}</p>
+        </div>
+        <div>
+            <p class="text-sm text-gray-600">Review Status</p>
+            @if($user->is_frozen)
+                <span class="inline-flex rounded bg-red-100 px-2 py-1 text-xs font-semibold text-red-800">FROZEN - Under Review</span>
+            @else
+                <span class="inline-flex rounded bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">Clear</span>
+            @endif
+        </div>
     </div>
 
     <div class="mb-6">
@@ -79,6 +95,22 @@
             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                 Update Balance
             </button>
+        </form>
+    </div>
+
+    <div class="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <h3 class="text-xl font-bold mb-4">Lucky Wheel</h3>
+        <form method="POST" action="{{ route('admin.users.grantSpin', $user) }}">
+            @csrf
+            @if($user->lucky_wheel_available)
+                <button type="button" disabled class="bg-gray-200 text-gray-500 px-4 py-2 rounded cursor-not-allowed">
+                    Spin already granted
+                </button>
+            @else
+                <button type="submit" class="bg-[#a4fb03] text-gray-900 font-semibold px-4 py-2 rounded hover:opacity-90">
+                    Grant Lucky Wheel Spin
+                </button>
+            @endif
         </form>
     </div>
 

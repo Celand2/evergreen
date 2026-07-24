@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EverGreen Admin</title>
-      @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100">
     <!-- Conteneur global : hauteur écran fixe, pas de scroll global -->
     <div class="h-screen overflow-hidden flex">
@@ -56,6 +58,14 @@
                     <span class="mr-3">👥</span>
                     <span>Referrals</span>
                 </a>
+                <a href="{{ route('admin.sponsor-tiers.index') }}" class="flex items-center px-4 py-3 hover:bg-gray-800 {{ request()->routeIs('admin.sponsor-tiers.*') ? 'bg-gray-800 border-l-4 border-green-500' : '' }}">
+                    <span class="mr-3">🏆</span>
+                    <span>Sponsor Tiers</span>
+                </a>
+                <a href="{{ route('admin.lucky-wheel-segments.index') }}" class="flex items-center px-4 py-3 hover:bg-gray-800 {{ request()->routeIs('admin.lucky-wheel-segments.*') ? 'bg-gray-800 border-l-4 border-green-500' : '' }}">
+                    <span class="mr-3">🎰</span>
+                    <span>Lucky Wheel</span>
+                </a>
             </nav>
         </aside>
 
@@ -86,15 +96,15 @@
             <!-- Main : seule cette zone scrolle (verticalement). min-w-0 empêche le contenu (tables) de forcer l'élargissement de toute la page -->
             <main class="flex-1 min-w-0 bg-gray-100 px-6 py-6 overflow-y-auto overflow-x-hidden">
                 @if(session('success'))
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                        {{ session('success') }}
-                    </div>
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ session('success') }}
+                </div>
                 @endif
 
                 @if(session('error'))
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        {{ session('error') }}
-                    </div>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ session('error') }}
+                </div>
                 @endif
 
                 @yield('content')
@@ -120,4 +130,5 @@
         }
     </script>
 </body>
+
 </html>

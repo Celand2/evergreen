@@ -14,6 +14,7 @@ class UserVip extends Model
         'vip_id',
         'amount_invested',
         'daily_gain',
+        'duration_days',
         'started_at',
         'expires_at',
         'status',
@@ -22,15 +23,14 @@ class UserVip extends Model
     protected $casts = [
         'amount_invested' => 'decimal:2',
         'daily_gain' => 'decimal:2',
-        'started_at' => 'date',
-        'expires_at' => 'date',
+        'started_at' => 'datetime',
+        'expires_at' => 'datetime',
     ];
 
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('status', 'active')
-                     ->where('expires_at', '>=', today());
+        return $query->where('status', 'active');
     }
 
     // Relations

@@ -19,6 +19,10 @@ class WithdrawalController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->is_frozen) {
+        return back()->with('error', 'Your account is under review. Withdrawals are temporarily disabled.');
+        }
+
         $validated = $request->validate([
             'payment_method_id' => ['required', 'exists:payment_methods,id'],
             'amount_local' => ['required', 'numeric', 'min:1'],
@@ -33,8 +37,8 @@ class WithdrawalController extends Controller
         $rateUsed = $exchangeRate ? $exchangeRate->rate_to_usd : 1;
         $amountUsd = $rateUsed > 0 ? $validated['amount_local'] / $rateUsed : 0;
 
-        if ($amountUsd < 10) {
-            return back()->with('error', 'Withdrawal amount must be at least $10.00 USD.');
+        if ($amountUsd < 0.5) {
+            return back()->with('error', 'Withdrawal amount must be at least $0.500 USD.');
         }
 
         if ($user->balance_retirable < $amountUsd) {

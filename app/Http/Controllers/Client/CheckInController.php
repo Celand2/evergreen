@@ -21,13 +21,13 @@ class CheckInController extends Controller
         CheckIn::create([
             'user_id' => $user->id,
             'date' => today(),
-            'amount' => 0.5,
+            'amount' => 0.025,
         ]);
 
         // Add to balance_retirable
-        $user->balance_retirable += 0.5;
+        $user->balance_retirable += 0.025;
         $user->save();
 
-        return back()->with('success', 'Check-in successful! You earned $0.50.');
+        return back()->with('success', 'Check-in successful! You earned $0.025.');
     }
 }

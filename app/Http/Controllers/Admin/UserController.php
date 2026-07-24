@@ -47,4 +47,9 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
+    public function grantSpin(User $user)
+    {
+        $user->update(['lucky_wheel_available' => true]);
+        return back()->with('success', "Spin granted to {$user->name}.");
+    }
 }

@@ -10,6 +10,45 @@
         .text-primary { color: #20fb03; }
         .bg-primary { background-color: #28fb03; }
         .border-primary { border-color: #03fb03; }
+        .client-section {
+            border: 1px solid #20fb03 !important;
+            box-shadow: inset 0 0 12px rgba(32, 251, 3, 0.28);
+            isolation: isolate;
+            overflow: hidden;
+            position: relative;
+        }
+        .client-section::before {
+            background: radial-gradient(ellipse at center, rgba(32, 251, 3, 0.14) 0%, rgba(32, 251, 3, 0.06) 55%, rgba(32, 251, 3, 0.02) 100%);
+            content: '';
+            inset: 0;
+            pointer-events: none;
+            position: absolute;
+            z-index: 0;
+        }
+        .client-section > * {
+            position: relative;
+            z-index: 1;
+        }
+        .activity-notification {
+            left: 50%;
+            max-width: calc(100vw - 2rem);
+            opacity: 0;
+            pointer-events: none;
+            position: fixed;
+            top: 4.5rem;
+            transform: translate(-50%, -3rem);
+            transition: opacity 300ms ease, transform 700ms ease-out;
+            width: 22rem;
+            z-index: 60;
+        }
+        .activity-notification.is-visible {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+        .activity-notification.is-hiding {
+            opacity: 0;
+            transform: translate(-50%, 0);
+        }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -47,6 +86,16 @@
             </div>
         </div>
     </header>
+
+    {{-- Simulated activity ticker --}}
+    <div id="activity-notification" class="activity-notification flex items-center gap-2 rounded-lg bg-[#20fb03] px-3 py-2 text-xs shadow-sm" role="status" aria-live="polite">
+            <svg class="w-3 h-3 shrink-0 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm0 16a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+            </svg>
+            <span id="activity-ticker-message" class="text-white truncate">
+                Withdrawal approved for 097000***
+            </span>
+        </div>
 
     <!-- Main Content -->
     <main class="bg-gray-900 min-h-screen">
@@ -120,5 +169,33 @@
     </nav>
 
     @stack('scripts')
+    <script>
+        (function () {
+            const notification = document.getElementById('activity-notification');
+            const message = document.getElementById('activity-ticker-message');
+            const zambianPrefixes = ['095', '096', '097', '076', '077'];
+
+            function maskedZambianNumber() {
+                const prefix = zambianPrefixes[Math.floor(Math.random() * zambianPrefixes.length)];
+                const suffix = String(Math.floor(Math.random() * 10000000)).padStart(7, '0');
+                return (prefix + suffix).slice(0, 6) + '***';
+            }
+
+            function refreshTicker() {
+                message.textContent = 'Withdrawal approved for ' + maskedZambianNumber();
+                notification.classList.remove('is-hiding');
+                notification.classList.add('is-visible');
+                window.setTimeout(function () {
+                    notification.classList.add('is-hiding');
+                }, 3000);
+                window.setTimeout(function () {
+                    notification.classList.remove('is-visible', 'is-hiding');
+                }, 3300);
+            }
+
+            refreshTicker();
+            window.setInterval(refreshTicker, 45000);
+        }());
+    </script>
 </body>
 </html>
