@@ -145,7 +145,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3"/>
                     </svg>
-                    <span class="text-[10px]">Mes VIPs</span>
+                    <span class="text-[10px]">My VIPs</span>
                 </a>
 
                 {{-- Team --}}
