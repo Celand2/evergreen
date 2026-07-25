@@ -38,25 +38,26 @@
         </div>
 
         {{-- Exchange Rate --}}
+        {{-- Exchange Rate --}}
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">
                 Currency / Exchange Rate
             </label>
             @if($exchangeRates->isEmpty())
-                <div class="bg-yellow-50 border border-yellow-300 text-yellow-700 px-3 py-2 rounded text-sm">
-                    No exchange rates found. 
-                    <a href="{{ route('admin.exchange-rates.index') }}" class="underline font-semibold">Create one first</a>.
-                </div>
+            <div class="bg-yellow-50 border border-yellow-300 text-yellow-700 px-3 py-2 rounded text-sm">
+                No exchange rates found.
+                <a href="{{ route('admin.exchange-rates.index') }}" class="underline font-semibold">Create one first</a>.
+            </div>
             @else
-                <select name="exchange_rate_id" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#a4fb03]">
-                    <option value="">Select currency</option>
-                    @foreach($exchangeRates as $rate)
-                        <option value="{{ $rate->id }}" {{ old('exchange_rate_id') == $rate->id ? 'selected' : '' }}>
-                            {{ $rate->currency }} — 1 USD = {{ number_format($rate->rate_to_usd, 2) }} {{ $rate->currency }}
-                        </option>
-                    @endforeach
-                </select>
+            <select name="exchange_rate_id" required
+                class="w-full max-w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#a4fb03] text-sm truncate">
+                <option value="">Select currency</option>
+                @foreach($exchangeRates as $rate)
+                <option value="{{ $rate->id }}" {{ old('exchange_rate_id') == $rate->id ? 'selected' : '' }}>
+                    {{ $rate->currency }} (1$ = {{ number_format($rate->rate_to_usd, 2) }})
+                </option>
+                @endforeach
+            </select>
             @endif
         </div>
 

@@ -9,12 +9,22 @@ use Illuminate\Http\Request;
 
 class WithdrawalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $withdrawals = Withdrawal::with(['user', 'paymentMethod'])->paginate(20);
+        $query = Withdrawal::with(['user', 'paymentMethod'])->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('id', $search)
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $withdrawals = $query->paginate(20)->withQueryString();
+
         return view('admin.withdrawals.index', compact('withdrawals'));
     }
-
     public function approve(Withdrawal $withdrawal)
     {
         app(WithdrawalService::class)->approve($withdrawal);
