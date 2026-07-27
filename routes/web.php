@@ -25,10 +25,10 @@ use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\EarningsSimulatorController as ClientEarningsSimulatorController;
 use App\Http\Controllers\Client\LuckyWheelController as ClientLuckyWheelController;
 
-// Redirect root to login
+// Public homepage
 Route::get('/', function () {
-    return redirect('/login');
-});
+    return view('index');
+})->name('home');
 
 // Client Authentication Routes
 Route::get('/login', [ClientAuthController::class, 'showLogin'])->name('client.login');
