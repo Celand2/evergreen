@@ -39,7 +39,7 @@ Route::post('/register', [ClientAuthController::class, 'register']);
 // Client Routes (Protected)
 Route::middleware(['auth', 'isClient'])->prefix('client')->name('client.')->group(function () {
     Route::post('/logout', [ClientAuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [ClientDashboardController::class, 'dashboard'])->name('dashboard');
 
     // VIPs
     Route::get('/vips', [ClientVipController::class, 'plans'])->name('vips.index');
