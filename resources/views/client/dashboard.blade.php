@@ -22,7 +22,7 @@
     <div class="flex-1 flex flex-col justify-center pl-1">
         <p class="text-gray-500 text-[10px] mb-0.5">Welcome bonus</p>
         <p class="text-[#20fb03] font-semibold text-base">
-            {{ $user->toLocal(10) }}
+            {{ $user->toLocal(0.5) }}
         </p>
         <p class="text-gray-600 text-[10px]">Free on signup</p>
     </div>

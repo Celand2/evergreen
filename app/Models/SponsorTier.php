@@ -33,7 +33,7 @@ class SponsorTier extends Model
     {
         return self::where('min_actives', '<=', $activeCount)
             ->orderByDesc('min_actives')
-            ->firstOrFail();
+            ->first() ?? self::orderBy('min_actives')->firstOrFail();
     }
 
     // Prochain palier à atteindre
