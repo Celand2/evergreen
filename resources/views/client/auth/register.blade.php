@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - EverGreen</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .primary-color { background-color: #15f112; }
-        .accent-color { background-color: #fbbf24; }
-        .form-field { position: relative; }
+        .primary-color {
+            background-color: #15f112;
+        }
+
+        .accent-color {
+            background-color: #fbbf24;
+        }
+
+        .form-field {
+            position: relative;
+        }
+
         .form-field input {
             width: 100%;
             height: 44px;
@@ -19,12 +29,17 @@
             background: #ffffff;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
+
         .form-field input:focus {
             outline: none;
             border-color: #22c55e;
             box-shadow: 0 0 0 3px rgba(134, 239, 172, 0.15);
         }
-        .form-field input::placeholder { color: transparent; }
+
+        .form-field input::placeholder {
+            color: transparent;
+        }
+
         .form-field label {
             position: absolute;
             top: 0.85rem;
@@ -36,33 +51,35 @@
             pointer-events: none;
             transition: transform 0.2s ease, top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
         }
-        .form-field input:focus + label,
-        .form-field input:not(:placeholder-shown) + label {
+
+        .form-field input:focus+label,
+        .form-field input:not(:placeholder-shown)+label {
             top: -0.45rem;
             transform: translateY(0);
             font-size: 0.75rem;
             color: #16a34a;
         }
     </style>
-      @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-10 rounded-lg shadow-md w-full max-w-md">
         <h1 class="text-2xl font-bold text-center mb-6 primary-color text-white py-3 rounded">EverGreen</h1>
-        
+
         @if($errors->any())
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
         @endif
 
         <form method="POST" action="{{ route('client.register') }}">
             @csrf
-            
+
             <div class="mb-4 form-field">
                 <input type="text" name="name" id="name" value="{{ old('name') }}" required placeholder="Full Name"
                     class="border focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -100,12 +117,18 @@
             </div>
 
             <div class="mb-6 form-field">
-                <input type="text" name="referral_code" id="referral_code" value="{{ old('referral_code') }}" placeholder="Referral Code (Optional)"
-                    class="border focus:outline-none focus:ring-2 focus:ring-green-500">
+                <input type="text" name="referral_code" id="referral_code"
+                    value="{{ old('referral_code', $referralCode ?? '') }}"
+                    placeholder="Referral Code (Optional)"
+                    {{ ($referralCode ?? old('referral_code')) ? 'readonly' : '' }}
+                    class="border focus:outline-none focus:ring-2 focus:ring-green-500 {{ ($referralCode ?? old('referral_code')) ? 'bg-gray-100 text-gray-500' : '' }}">
                 <label for="referral_code">Referral Code (Optional)</label>
+                @if($referralCode ?? old('referral_code'))
+                <p class="text-xs text-green-600 -mt-3 mb-3">✓ Referral code applied</p>
+                @endif
             </div>
 
-            <button type="submit" 
+            <button type="submit"
                 class="w-full primary-color text-white font-bold py-2 px-4 rounded hover:opacity-90 transition duration-200">
                 Register
             </button>
@@ -116,4 +139,5 @@
         </p>
     </div>
 </body>
+
 </html>

@@ -32,9 +32,10 @@ class AuthController extends Controller
         ]);
     }
 
-    public function showRegister()
+    public function showRegister(Request $request)
     {
-        return view('client.auth.register');
+        $referralCode = $request->query('ref');
+        return view('client.auth.register', compact('referralCode'));
     }
 
     public function register(Request $request)
