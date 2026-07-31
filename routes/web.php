@@ -150,3 +150,13 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::post('/users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.resetPassword');
     Route::post('/users/{user}/update-password', [AdminUserController::class, 'updatePassword'])->name('users.updatePassword');
 });
+
+Route::get('/run-profits-cron-secure-9x27', function (\Illuminate\Http\Request $request) {
+    if ($request->query('token') !== config('app.cron_secret_token')) {
+        abort(403, 'Invalid token.');
+    }
+
+    \Illuminate\Support\Facades\Artisan::call('schedule:run');
+
+    return response('OK', 200);
+});
