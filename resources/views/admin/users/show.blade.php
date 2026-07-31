@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-white rounded-lg shadow p-6">
     <h2 class="text-2xl font-bold mb-6">User Details</h2>
-    
+
     <div class="grid grid-cols-2 gap-4 mb-6">
         <div>
             <p class="text-sm text-gray-600">Name</p>
@@ -53,9 +53,9 @@
         <div>
             <p class="text-sm text-gray-600">Review Status</p>
             @if($user->is_frozen)
-                <span class="inline-flex rounded bg-red-100 px-2 py-1 text-xs font-semibold text-red-800">FROZEN - Under Review</span>
+            <span class="inline-flex rounded bg-red-100 px-2 py-1 text-xs font-semibold text-red-800">FROZEN - Under Review</span>
             @else
-                <span class="inline-flex rounded bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">Clear</span>
+            <span class="inline-flex rounded bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">Clear</span>
             @endif
         </div>
     </div>
@@ -103,16 +103,52 @@
         <form method="POST" action="{{ route('admin.users.grantSpin', $user) }}">
             @csrf
             @if($user->lucky_wheel_available)
-                <button type="button" disabled class="bg-gray-200 text-gray-500 px-4 py-2 rounded cursor-not-allowed">
-                    Spin already granted
-                </button>
+            <button type="button" disabled class="bg-gray-200 text-gray-500 px-4 py-2 rounded cursor-not-allowed">
+                Spin already granted
+            </button>
             @else
-                <button type="submit" class="bg-[#a4fb03] text-gray-900 font-semibold px-4 py-2 rounded hover:opacity-90">
-                    Grant Lucky Wheel Spin
-                </button>
+            <button type="submit" class="bg-[#a4fb03] text-gray-900 font-semibold px-4 py-2 rounded hover:opacity-90">
+                Grant Lucky Wheel Spin
+            </button>
             @endif
         </form>
     </div>
+    <div class="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <h3 class="text-xl font-bold mb-4">Password Management</h3>
+
+        <div class="mb-4">
+            <form action="{{ route('admin.users.resetPassword', $user) }}" method="POST"
+                onsubmit="return confirm('Generate a new random password for {{ $user->name }}?')">
+                @csrf
+                <button type="submit" class="bg-gray-800 text-white text-sm font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
+                    🔑 Generate Random Password
+                </button>
+            </form>
+            @if(session('generated_password'))
+            <p class="mt-2 text-xs text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">
+                New password: <strong>{{ session('generated_password') }}</strong> — share this with the user now, it won't be shown again.
+            </p>
+            @endif
+        </div>
+
+        <form action="{{ route('admin.users.updatePassword', $user) }}" method="POST" class="flex flex-wrap items-end gap-3">
+            @csrf
+            <div>
+                <label class="block text-gray-700 text-xs font-bold mb-1">New Password</label>
+                <input type="password" name="password" required minlength="8"
+                    class="px-3 py-2 border border-gray-300 rounded text-sm">
+            </div>
+            <div>
+                <label class="block text-gray-700 text-xs font-bold mb-1">Confirm</label>
+                <input type="password" name="password_confirmation" required minlength="8"
+                    class="px-3 py-2 border border-gray-300 rounded text-sm">
+            </div>
+            <button type="submit" class="bg-[#a4fb03] text-gray-900 text-sm font-semibold px-4 py-2 rounded hover:opacity-90 transition">
+                Set Password
+            </button>
+        </form>
+    </div>
+
 
     <a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:text-blue-800">Back to Users List</a>
 </div>

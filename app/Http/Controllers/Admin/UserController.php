@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -51,5 +53,30 @@ class UserController extends Controller
     {
         $user->update(['lucky_wheel_available' => true]);
         return back()->with('success', "Spin granted to {$user->name}.");
+    }
+
+    public function resetPassword(User $user)
+    {
+        $newPassword = Str::random(8);
+
+        $user->update([
+            'password' => Hash::make($newPassword),
+        ]);
+
+        return back()
+            ->with('success', "Password reset for {$user->name}.")
+            ->with('generated_password', $newPassword);
+    }
+    public function updatePassword(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return back()->with('success', "Password updated for {$user->name}.");
     }
 }

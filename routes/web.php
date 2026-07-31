@@ -146,4 +146,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::post('/sponsor-tiers', [AdminSponsorTierController::class, 'store'])->name('sponsor-tiers.store');
     Route::put('/sponsor-tiers/{sponsorTier}', [AdminSponsorTierController::class, 'update'])->name('sponsor-tiers.update');
     Route::delete('/sponsor-tiers/{sponsorTier}', [AdminSponsorTierController::class, 'destroy'])->name('sponsor-tiers.destroy');
+
+    Route::post('/users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.resetPassword');
+    Route::post('/users/{user}/update-password', [AdminUserController::class, 'updatePassword'])->name('users.updatePassword');
 });

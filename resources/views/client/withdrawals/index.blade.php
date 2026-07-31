@@ -2,12 +2,12 @@
 
 @section('content')
 <div class="client-section rounded-xl p-4 mb-4 border border-gray-700"
-     style="background: radial-gradient(ellipse at top right, rgba(32,251,3,0.07) 0%, #1f2937 80%);">
+    style="background: radial-gradient(ellipse at top right, rgba(32,251,3,0.07) 0%, #1f2937 80%);">
     <h2 class="text-white font-semibold text-sm mb-4">Make a Withdrawal</h2>
-    
+
     <form action="{{ route('client.withdrawals.store') }}" method="POST" class="mb-8">
         @csrf
-        
+
         <div class="mb-3">
             <label for="payment_method_id" class="block text-gray-400 text-[11px] mb-1">Payment Method</label>
             <select name="payment_method_id" id="payment-method-id" required
@@ -15,13 +15,13 @@
                 onchange="updateWithdrawalDetails()">
                 <option value="">Select Payment Method</option>
                 @foreach($paymentMethods as $method)
-                    <option value="{{ $method->id }}"
-                        data-rate="{{ optional($method->exchangeRate)->rate_to_usd ?? 1 }}"
-                        data-currency="{{ optional($method->exchangeRate)->currency ?? 'USD' }}"
-                        data-account-number="{{ $method->account_number }}"
-                        data-account-name="{{ $method->account_name }}">
-                        {{ $method->name }}
-                    </option>
+                <option value="{{ $method->id }}"
+                    data-rate="{{ optional($method->exchangeRate)->rate_to_usd ?? 1 }}"
+                    data-currency="{{ optional($method->exchangeRate)->currency ?? 'USD' }}"
+                    data-account-number="{{ $method->account_number }}"
+                    data-account-name="{{ $method->account_name }}">
+                    {{ $method->name }}
+                </option>
                 @endforeach
             </select>
         </div>
@@ -68,8 +68,10 @@
             <input type="text" name="account_name" id="account_name" required
                 class="w-full bg-gray-900 border border-gray-700 text-white text-xs rounded-lg px-3 py-2 outline-none focus:border-[#20fb03] transition">
         </div>
-
-        <button type="submit" 
+        <p class="text-[10px] text-gray-500 mb-3">
+            Minimum withdrawal: {{ auth()->user()->currency ? auth()->user()->toLocal(0.7) : '$0.70 USD' }}
+        </p>
+        <button type="submit"
             class="w-full bg-[#20fb03] text-gray-900 font-semibold py-2.5 rounded-lg hover:opacity-90 transition">
             💸 Request Withdrawal
         </button>
@@ -89,37 +91,37 @@
             </thead>
             <tbody>
                 @foreach($withdrawals as $withdrawal)
-                    <tr class="border-b">
-                        <td class="px-4 py-2">{{ $withdrawal->created_at->format('Y-m-d') }}</td>
-                        <td class="px-4 py-2">
-                            @if(auth()->user()->currency)
-                                {{ auth()->user()->toLocal($withdrawal->amount_usd) }}
-                            @else
-                                ${{ number_format($withdrawal->amount_usd, 2) }} USD
-                            @endif
-                        </td>
-                        <td class="px-4 py-2">
-                            @if(auth()->user()->currency)
-                                {{ auth()->user()->toLocal($withdrawal->fee) }}
-                            @else
-                                ${{ number_format($withdrawal->fee, 2) }} USD
-                            @endif
-                        </td>
-                        <td class="px-4 py-2">
-                            @if(auth()->user()->currency)
-                                {{ auth()->user()->toLocal($withdrawal->amount_received) }}
-                            @else
-                                ${{ number_format($withdrawal->amount_received, 2) }} USD
-                            @endif
-                        </td>
-                        <td class="px-4 py-2">
-                            <span class="px-2 py-1 rounded text-xs font-semibold
+                <tr class="border-b">
+                    <td class="px-4 py-2">{{ $withdrawal->created_at->format('Y-m-d') }}</td>
+                    <td class="px-4 py-2">
+                        @if(auth()->user()->currency)
+                        {{ auth()->user()->toLocal($withdrawal->amount_usd) }}
+                        @else
+                        ${{ number_format($withdrawal->amount_usd, 2) }} USD
+                        @endif
+                    </td>
+                    <td class="px-4 py-2">
+                        @if(auth()->user()->currency)
+                        {{ auth()->user()->toLocal($withdrawal->fee) }}
+                        @else
+                        ${{ number_format($withdrawal->fee, 2) }} USD
+                        @endif
+                    </td>
+                    <td class="px-4 py-2">
+                        @if(auth()->user()->currency)
+                        {{ auth()->user()->toLocal($withdrawal->amount_received) }}
+                        @else
+                        ${{ number_format($withdrawal->amount_received, 2) }} USD
+                        @endif
+                    </td>
+                    <td class="px-4 py-2">
+                        <span class="px-2 py-1 rounded text-xs font-semibold
                                 {{ $withdrawal->status === 'approved' ? 'bg-green-100 text-green-800' : 
                                    ($withdrawal->status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                {{ ucfirst($withdrawal->status) }}
-                            </span>
-                        </td>
-                    </tr>
+                            {{ ucfirst($withdrawal->status) }}
+                        </span>
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -135,7 +137,8 @@
         const paymentSelect = document.getElementById('payment-method-id');
         const selectedOption = paymentSelect?.options[paymentSelect.selectedIndex];
         const rate = parseFloat(selectedOption?.dataset.rate) || 1;
-        const currency = selectedOption?.dataset.currency || '{{ auth()->user()->currency ?? 'USD' }}';
+        const currency = selectedOption?.dataset.currency || '{{ auth()->user()->currency ?? '
+        USD ' }}';
         const accountNumber = selectedOption?.dataset.accountNumber || '-';
         const accountName = selectedOption?.dataset.accountName || '-';
         const localAmount = parseFloat(document.getElementById('amount-local')?.value) || 0;
@@ -152,6 +155,18 @@
         document.getElementById('withdrawal-usd').textContent = '$' + usd.toFixed(2);
         document.getElementById('withdrawal-fee').textContent = '$' + fee.toFixed(2);
         document.getElementById('withdrawal-received').textContent = '$' + received.toFixed(2);
+       
+
+        const submitBtn = document.querySelector('button[type="submit"]');
+        if (usd > 0 && usd < 0.7) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            submitBtn.textContent = '⚠️ Minimum $0.70 required';
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            submitBtn.textContent = '💸 Request Withdrawal';
+        }
     }
 
     document.addEventListener('DOMContentLoaded', updateWithdrawalDetails);
