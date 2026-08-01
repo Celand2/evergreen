@@ -27,13 +27,17 @@ class VipController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->balance_investissable < $vip->price) {
+        $userBalanceCents = (int) round($user->balance_investissable * 100);
+        $vipPriceCents = (int) round($vip->price * 100);
+
+        if ($userBalanceCents < $vipPriceCents) {
             return back()->with('error', 'Insufficient balance.');
         }
 
-        $user->balance_investissable -= $vip->price;
+        $user->balance_investissable = round($user->balance_investissable - $vip->price, 2);
         $user->save();
 
+        
         $startedAt = now();
         $expiresAt = now()->addDays($vip->duration_days);
         $dailyGain = $vip->calculateDailyGain($vip->price);

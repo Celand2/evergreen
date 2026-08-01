@@ -31,7 +31,7 @@ class DepositController extends Controller
         $paymentMethod = PaymentMethod::with('exchangeRate')->findOrFail($validated['payment_method_id']);
         $exchangeRate = $paymentMethod->exchangeRate;
         $rateUsed = $exchangeRate ? $exchangeRate->rate_to_usd : 1;
-        $amountUsd = $rateUsed > 0 ? $validated['amount_local'] / $rateUsed : 0;
+        $amountUsd = $rateUsed > 0 ? ceil(($validated['amount_local'] / $rateUsed) * 100) / 100 : 0;
         $currency = $user->currency ?: ($exchangeRate?->currency ?? 'USD');
 
         if ($request->hasFile('proof')) {
