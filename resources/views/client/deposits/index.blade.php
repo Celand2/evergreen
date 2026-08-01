@@ -22,11 +22,22 @@
                         data-rate="{{ optional($method->exchangeRate)->rate_to_usd ?? 1 }}"
                         data-currency="{{ optional($method->exchangeRate)->currency ?? ($user->currency ?? 'USD') }}"
                         data-account-number="{{ $method->account_number }}"
-                        data-account-name="{{ $method->account_name }}">
+                        data-account-name="{{ $method->account_name }}"
+                        data-logo="{{ $method->logo ? asset('storage/' . $method->logo) : '' }}"
+                        data-method-name="{{ $method->name }}">
                         {{ $method->name }}
                     </option>
                 @endforeach
             </select>
+
+            <div id="deposit-payment-preview" class="mt-2 hidden items-center gap-3 rounded-lg border border-gray-700 bg-gray-900/60 p-2">
+                <img id="deposit-payment-logo" src="" alt="Payment method logo"
+                    class="w-12 h-12 md:w-14 md:h-14 object-cover rounded-lg border border-gray-700 bg-white/5">
+                <div>
+                    <p class="text-[10px] text-gray-500">Selected method</p>
+                    <p id="deposit-payment-name" class="text-xs font-semibold text-white">-</p>
+                </div>
+            </div>
         </div>
 
         <div class="mb-3 text-xs text-gray-500">
@@ -111,11 +122,30 @@
         const currency = '{{ $user->currency ?? '' }}' || optionCurrency;
         const accountNumber = selectedOption?.dataset.accountNumber || '-';
         const accountName = selectedOption?.dataset.accountName || '-';
+        const logo = selectedOption?.dataset.logo || '';
+        const methodName = selectedOption?.dataset.methodName || '-';
         const localAmount = parseFloat(document.getElementById('amount-local')?.value) || 0;
 
         document.getElementById('deposit-account-number').textContent = 'Account: ' + accountNumber;
         document.getElementById('deposit-account-name').textContent = 'Name: ' + accountName;
         document.getElementById('deposit-currency').textContent = 'Currency: ' + currency;
+
+        const previewWrapper = document.getElementById('deposit-payment-preview');
+        const previewLogo = document.getElementById('deposit-payment-logo');
+        const previewName = document.getElementById('deposit-payment-name');
+
+        if (selectedOption && selectedOption.value) {
+            previewWrapper.classList.remove('hidden');
+            previewWrapper.classList.add('flex');
+            previewLogo.src = logo;
+            previewLogo.alt = methodName + ' logo';
+            previewName.textContent = methodName;
+        } else {
+            previewWrapper.classList.add('hidden');
+            previewWrapper.classList.remove('flex');
+            previewLogo.src = '';
+            previewName.textContent = '-';
+        }
 
         const usd = rate > 0 ? localAmount / rate : 0;
         document.getElementById('amount-usd-display').textContent =

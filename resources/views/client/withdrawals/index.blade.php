@@ -19,11 +19,22 @@
                     data-rate="{{ optional($method->exchangeRate)->rate_to_usd ?? 1 }}"
                     data-currency="{{ optional($method->exchangeRate)->currency ?? 'USD' }}"
                     data-account-number="{{ $method->account_number }}"
-                    data-account-name="{{ $method->account_name }}">
+                    data-account-name="{{ $method->account_name }}"
+                    data-logo="{{ $method->logo ? asset('storage/' . $method->logo) : '' }}"
+                    data-method-name="{{ $method->name }}">
                     {{ $method->name }}
                 </option>
                 @endforeach
             </select>
+
+            <div id="withdrawal-payment-preview" class="mt-2 hidden items-center gap-3 rounded-lg border border-gray-700 bg-gray-900/60 p-2">
+                <img id="withdrawal-payment-logo" src="" alt="Payment method logo"
+                    class="w-12 h-12 md:w-14 md:h-14 object-cover rounded-lg border border-gray-700 bg-white/5">
+                <div>
+                    <p class="text-[10px] text-gray-500">Selected method</p>
+                    <p id="withdrawal-payment-name" class="text-xs font-semibold text-white">-</p>
+                </div>
+            </div>
         </div>
 
         <div class="mb-3 text-xs text-gray-500">
@@ -137,16 +148,34 @@
         const paymentSelect = document.getElementById('payment-method-id');
         const selectedOption = paymentSelect?.options[paymentSelect.selectedIndex];
         const rate = parseFloat(selectedOption?.dataset.rate) || 1;
-        const currency = selectedOption?.dataset.currency || '{{ auth()->user()->currency ?? '
-        USD ' }}';
+        const currency = selectedOption?.dataset.currency || '{{ auth()->user()->currency ?? 'USD' }}';
         const accountNumber = selectedOption?.dataset.accountNumber || '-';
         const accountName = selectedOption?.dataset.accountName || '-';
+        const logo = selectedOption?.dataset.logo || '';
+        const methodName = selectedOption?.dataset.methodName || '-';
         const localAmount = parseFloat(document.getElementById('amount-local')?.value) || 0;
 
         document.getElementById('withdrawal-account-number').textContent = 'Account: ' + accountNumber;
         document.getElementById('withdrawal-account-name').textContent = 'Name: ' + accountName;
         document.getElementById('withdrawal-currency-display').textContent = 'Currency: ' + currency;
         document.getElementById('withdrawal-currency').value = currency;
+
+        const previewWrapper = document.getElementById('withdrawal-payment-preview');
+        const previewLogo = document.getElementById('withdrawal-payment-logo');
+        const previewName = document.getElementById('withdrawal-payment-name');
+
+        if (selectedOption && selectedOption.value) {
+            previewWrapper.classList.remove('hidden');
+            previewWrapper.classList.add('flex');
+            previewLogo.src = logo;
+            previewLogo.alt = methodName + ' logo';
+            previewName.textContent = methodName;
+        } else {
+            previewWrapper.classList.add('hidden');
+            previewWrapper.classList.remove('flex');
+            previewLogo.src = '';
+            previewName.textContent = '-';
+        }
 
         const usd = rate > 0 ? localAmount / rate : 0;
         const fee = usd * 0.10;
@@ -155,7 +184,6 @@
         document.getElementById('withdrawal-usd').textContent = '$' + usd.toFixed(2);
         document.getElementById('withdrawal-fee').textContent = '$' + fee.toFixed(2);
         document.getElementById('withdrawal-received').textContent = '$' + received.toFixed(2);
-       
 
         const submitBtn = document.querySelector('button[type="submit"]');
         if (usd > 0 && usd < 0.7) {
