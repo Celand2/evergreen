@@ -98,7 +98,7 @@
         </svg>
         <p class="text-white text-xs font-medium mb-0.5">Check-in</p>
         <p class="text-[#20fb03] text-[10px] mb-2">
-            +{{ auth()->user()->toLocal(0.5) }}
+            +{{ auth()->user()->toLocal(0.025) }}
         </p>
         @if($has_checked_in_today)
         <button disabled
