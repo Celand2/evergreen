@@ -30,19 +30,19 @@
                 @endforeach
             </select>
 
-            <div id="deposit-payment-preview" class="mt-2 hidden items-center gap-3 rounded-lg border border-gray-700 bg-gray-900/60 p-2">
+            <div id="deposit-payment-preview" class="mt-2 hidden items-center gap-3 rounded-lg border border-[#20fb03]/40 bg-gray-900/70 p-3">
                 <img id="deposit-payment-logo" src="" alt="Payment method logo"
-                    class="w-12 h-12 md:w-14 md:h-14 object-cover rounded-lg border border-gray-700 bg-white/5">
+                    class="w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg border border-[#20fb03]/40 bg-white/5">
                 <div>
-                    <p class="text-[10px] text-gray-500">Selected method</p>
-                    <p id="deposit-payment-name" class="text-xs font-semibold text-white">-</p>
+                    <p class="text-[11px] text-[#20fb03]">Selected method</p>
+                    <p id="deposit-payment-name" class="text-sm font-semibold text-white">-</p>
                 </div>
             </div>
         </div>
 
-        <div class="mb-3 text-xs text-gray-500">
-            <p id="deposit-account-number">Account: -</p>
-            <p id="deposit-account-name">Name: -</p>
+        <div class="mb-3 rounded-lg border border-[#20fb03]/30 bg-gray-900/60 p-3 text-sm text-[#20fb03]">
+            <p id="deposit-account-number" class="mb-1">Account: -</p>
+            <p id="deposit-account-name" class="mb-1">Name: -</p>
             <p id="deposit-currency">Currency: {{ $user->currency ?? 'Select a method' }}</p>
         </div>
 
