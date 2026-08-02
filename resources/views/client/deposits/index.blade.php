@@ -68,8 +68,8 @@
 
         {{-- Proof --}}
         <div class="mb-4">
-            <label class="block text-gray-400 text-[11px] mb-1">Payment Proof (image)</label>
-            <input type="file" name="proof" accept="image/*"
+            <label class="block text-gray-400 text-[11px] mb-1">Payment Proof (image) <span class="text-[#20fb03]">*</span></label>
+            <input type="file" name="proof" accept="image/*" required
                 class="w-full bg-gray-900 border border-gray-700 text-gray-400 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#20fb03] transition">
         </div>
 

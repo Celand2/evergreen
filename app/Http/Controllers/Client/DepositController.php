@@ -24,7 +24,7 @@ class DepositController extends Controller
         $validated = $request->validate([
             'payment_method_id' => ['required', 'exists:payment_methods,id'],
             'amount_local'      => ['required', 'numeric', 'min:1'],
-            'proof'             => ['nullable', 'image', 'max:2048'],
+            'proof'             => ['required', 'image', 'max:2048'],
         ]);
 
         $user = auth()->user();

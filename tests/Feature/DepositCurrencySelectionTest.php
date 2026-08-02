@@ -7,6 +7,7 @@ use App\Models\ExchangeRate;
 use App\Models\PaymentMethod;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class DepositCurrencySelectionTest extends TestCase
@@ -45,6 +46,7 @@ class DepositCurrencySelectionTest extends TestCase
             ->post(route('client.deposits.store'), [
                 'payment_method_id' => $paymentMethod->id,
                 'amount_local' => 2550,
+                'proof' => UploadedFile::fake()->create('proof.png', 10, 'image/png'),
             ])
             ->assertRedirect(route('client.deposits.index'));
 
