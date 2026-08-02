@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ExchangeRate extends Model
 {
     protected $fillable = [
+        'payment_method_id',
         'currency',
         'rate_to_usd',
         'date',

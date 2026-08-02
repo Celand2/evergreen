@@ -119,7 +119,7 @@
         const selectedOption = paymentSelect?.options[paymentSelect.selectedIndex];
         const rate = parseFloat(selectedOption?.dataset.rate) || 1;
         const optionCurrency = selectedOption?.dataset.currency || '{{ $user->currency ?? 'USD' }}';
-        const currency = '{{ $user->currency ?? '' }}' || optionCurrency;
+        const currency = selectedOption && selectedOption.value ? optionCurrency : '{{ $user->currency ?? 'USD' }}';
         const accountNumber = selectedOption?.dataset.accountNumber || '-';
         const accountName = selectedOption?.dataset.accountName || '-';
         const logo = selectedOption?.dataset.logo || '';

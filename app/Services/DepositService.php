@@ -14,10 +14,8 @@ class DepositService
         // Add amount_usd to balance_investissable
         $user->balance_investissable += $deposit->amount_usd;
 
-        // Set currency if null (first deposit)
-        if (is_null($user->currency)) {
-            $user->currency = $deposit->currency;
-        }
+        // Align the user's displayed currency with the payment method used on the deposit.
+        $user->currency = $deposit->currency;
 
         $user->save();
 

@@ -28,11 +28,15 @@ class DepositController extends Controller
         ]);
 
         $user = auth()->user();
-        $paymentMethod = PaymentMethod::with('exchangeRate')->findOrFail($validated['payment_method_id']);
-        $exchangeRate = $paymentMethod->exchangeRate;
+        $paymentMethod = PaymentMethod::findOrFail($validated['payment_method_id']);
+        $exchangeRate = ExchangeRate::query()
+            ->where('payment_method_id', $paymentMethod->id)
+            ->active()
+            ->latest()
+            ->first();
         $rateUsed = $exchangeRate ? $exchangeRate->rate_to_usd : 1;
+        $currency = $exchangeRate?->currency ?? $user->currency ?? 'USD';
         $amountUsd = $rateUsed > 0 ? ceil(($validated['amount_local'] / $rateUsed) * 100) / 100 : 0;
-        $currency = $user->currency ?: ($exchangeRate?->currency ?? 'USD');
 
         if ($request->hasFile('proof')) {
             $validated['proof'] = $request->file('proof')->store('deposits', 'public');
@@ -49,10 +53,7 @@ class DepositController extends Controller
             'status'            => 'pending',
         ]);
 
-        // Fixer la devise du user si pas encore définie
-        if (!$user->currency) {
-            $user->update(['currency' => $currency]);
-        }
+        $user->update(['currency' => $currency]);
 
         return redirect()->route('client.deposits.index')
             ->with('success', 'Deposit submitted successfully. Awaiting approval.');
