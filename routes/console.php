@@ -10,7 +10,7 @@ Artisan::command('inspire', function () {
 
 // Schedule daily gains processing at midnight
 Schedule::command('daily:process-gains')
-    ->everyFifteenMinutes()
+    ->everyMinute()
     ->timezone('Africa/Lusaka')
     ->withoutOverlapping()
     ->appendOutputTo(storage_path('logs/schedule.log'));
