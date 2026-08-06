@@ -16,7 +16,7 @@ class ProcessDailyGains extends Command
         try {
             $date = $this->option('date')
                 ? Carbon::createFromFormat('Y-m-d', $this->option('date'))->startOfDay()
-                : Carbon::today();
+                : Carbon::now();
         } catch (\Throwable) {
             $this->error('The --date option must use the YYYY-MM-DD format.');
 
