@@ -13,11 +13,7 @@
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-green-500">
         </div>
 
-        <div class="mb-4">
-            <label for="email" class="block text-gray-300 text-sm font-bold mb-2">Email</label>
-            <input type="email" name="email" id="email" value="{{ auth()->user()->email }}"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
+       
 
         <div class="mb-6">
             <label for="country" class="block text-gray-300 text-sm font-bold mb-2">Country</label>
