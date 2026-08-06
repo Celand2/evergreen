@@ -12,4 +12,5 @@ Artisan::command('inspire', function () {
 Schedule::command('daily:process-gains')
     ->everyFifteenMinutes()
     ->timezone('Africa/Lusaka')
-    ->withoutOverlapping();
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/schedule.log'));

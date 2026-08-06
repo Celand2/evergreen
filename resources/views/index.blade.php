@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EverGreen - Grow Your Money Daily</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    @laravelPWA
     <style>
         :root { --primary: #a4fb03; }
         .text-primary { color: #a4fb03; }
