@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EverGreen</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     @laravelPWA
     <style>
         :root {
@@ -74,9 +74,6 @@
 </head>
 
 <body class="bg-gray-900">
-    <button id="pwa-install-btn" class="hidden bg-[#a4fb03] text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-lg">
-        📲 Install App
-    </button>
 
     <!-- Header -->
     <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
@@ -223,37 +220,17 @@
     </script>
     <script>
         let deferredPrompt;
-        const installBtn = document.getElementById('pwa-install-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
 
-            if (installBtn) {
-                installBtn.classList.remove('hidden');
-            }
-        });
+            // Déclenche immédiatement la vraie fenêtre native d'installation
+            deferredPrompt.prompt();
 
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (!deferredPrompt) return;
-
-                deferredPrompt.prompt();
-                const {
-                    outcome
-                } = await deferredPrompt.userChoice;
-
-                if (outcome === 'accepted') {
-                    installBtn.classList.add('hidden');
-                }
-
+            deferredPrompt.userChoice.then((choiceResult) => {
                 deferredPrompt = null;
             });
-        }
-
-        window.addEventListener('appinstalled', () => {
-            if (installBtn) installBtn.classList.add('hidden');
-            deferredPrompt = null;
         });
     </script>
 </body>
