@@ -180,7 +180,7 @@
     $tier_progress = min(100, ($active_referrals_count / max(1, $next_tier->min_actives)) * 100);
     @endphp
     <div class="mt-3 h-1.5 w-full rounded-full bg-gray-800">
-        <div class="h-1.5 rounded-full bg-[#20fb03]" style="width: {{ $tier_progress }}%;"></div>
+        <div class="h-1.5 rounded-full bg-[#20fb03]" style="width: {{ $tier_progress }}%"></div>
     </div>
     <p class="mt-1 text-gray-400 text-[10px]">{{ $active_referrals_count }}/{{ $next_tier->min_actives }} active referrals</p>
     @else
