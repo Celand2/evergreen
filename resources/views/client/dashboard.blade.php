@@ -194,7 +194,7 @@
 
 {{-- Support --}}
 <div class="grid grid-cols-3 gap-2 mb-2">
-    <a href="#"
+    <a href="{{ route('client.guide') }}"
         class="client-section rounded-xl py-2 px-1 border border-gray-700 text-center hover:border-[#20fb03] transition"
         style="background: radial-gradient(ellipse at top, rgba(32,251,3,0.05) 0%, #1f2937 80%);">
         <svg class="w-5 h-5 text-[#20fb03] mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

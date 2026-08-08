@@ -24,6 +24,7 @@ use App\Http\Controllers\Client\NotificationController as ClientNotificationCont
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Client\EarningsSimulatorController as ClientEarningsSimulatorController;
 use App\Http\Controllers\Client\LuckyWheelController as ClientLuckyWheelController;
+use App\Http\Controllers\Client\GuideController as ClientGuideController;
 
 // Public homepage
 Route::get('/', function () {
@@ -40,6 +41,7 @@ Route::post('/register', [ClientAuthController::class, 'register']);
 Route::middleware(['auth', 'isClient'])->prefix('client')->name('client.')->group(function () {
     Route::post('/logout', [ClientAuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/guide', [ClientGuideController::class, 'index'])->name('guide');
 
     // VIPs
     Route::get('/vips', [ClientVipController::class, 'plans'])->name('vips.index');
@@ -151,12 +153,20 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::post('/users/{user}/update-password', [AdminUserController::class, 'updatePassword'])->name('users.updatePassword');
 });
 
-Route::get('/run-profits-cron-secure-9x27', function (\Illuminate\Http\Request $request) {
-    if ($request->query('token') !== config('app.cron_secret_token')) {
-        abort(403, 'Invalid token.');
-    }
 
-    \Illuminate\Support\Facades\Artisan::call('schedule:run');
+Route::get('/run-profits-cron-secure-9x27', function () {
+    abort_unless(
+        hash_equals(env('CRON_SECRET_TOKEN', ''), (string) request('token')),
+        403
+    );
 
-    return response('OK', 200);
+    set_time_limit(300);
+
+    Artisan::call('daily:process-gains');
+
+    return response()->json([
+        'status'  => 'success',
+        'message' => 'Daily gains processed.',
+        'output'  => Artisan::output(),
+    ]);
 });
