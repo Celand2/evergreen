@@ -6,23 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('user_vips', function (Blueprint $table) {
-            //
+            $table->timestamp('last_gain_credited_at')->nullable()->after('daily_gain');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('user_vips', function (Blueprint $table) {
-            //
+            $table->dropColumn('last_gain_credited_at');
         });
     }
 };
