@@ -54,4 +54,8 @@ class UserVip extends Model
     {
         return $this->dailyGains()->whereDate('date', today())->exists();
     }
+    public function isVipActive(): bool
+{
+    return $this->userVips()->active()->exists();
+}
 }
