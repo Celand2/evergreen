@@ -23,10 +23,10 @@ class UserVip extends Model
     protected $casts = [
         'amount_invested' => 'decimal:2',
         'daily_gain' => 'decimal:2',
-        'started_at' => 'datetime',
-        'expires_at' => 'datetime',
+        'started_at' => 'date',
+        'expires_at' => 'date',
+        'last_gain_credited_at' => 'datetime',
     ];
-
     // Scopes
     public function scopeActive($query)
     {
@@ -55,7 +55,7 @@ class UserVip extends Model
         return $this->dailyGains()->whereDate('date', today())->exists();
     }
     public function isVipActive(): bool
-{
-    return $this->userVips()->active()->exists();
-}
+    {
+        return $this->userVips()->active()->exists();
+    }
 }
