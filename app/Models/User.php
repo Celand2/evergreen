@@ -24,8 +24,8 @@ class User extends Authenticatable
         'referred_by',
         'balance_investissable',
         'balance_retirable',
-          'currency',  
-                'lucky_wheel_available',
+        'currency',
+        'lucky_wheel_available',
         'preferred_payment_method_id',
     ];
 
@@ -141,9 +141,14 @@ class User extends Authenticatable
     }
 
     // Un user est "actif" comme filleul si dépôt total approuvé >= $5 OU VIP actif
-public function qualifiesAsActive(): bool
-{
-    $totalApprovedDeposits = $this->deposits()->approved()->sum('amount_usd');
-    return $totalApprovedDeposits >= 5 || $this->isVipActive();
-}
+    public function qualifiesAsActive(): bool
+    {
+        $totalApprovedDeposits = $this->deposits()->approved()->sum('amount_usd');
+        return $totalApprovedDeposits >= 5 || $this->isVipActive();
+    }
+
+    public function isVipActive(): bool
+    {
+        return $this->userVips()->active()->exists();
+    }
 }
