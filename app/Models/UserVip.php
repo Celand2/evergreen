@@ -19,12 +19,11 @@ class UserVip extends Model
         'expires_at',
         'status',
     ];
-
     protected $casts = [
         'amount_invested' => 'decimal:2',
         'daily_gain' => 'decimal:2',
-        'started_at' => 'date',
-        'expires_at' => 'date',
+        'started_at' => 'datetime',
+        'expires_at' => 'datetime',
         'last_gain_credited_at' => 'datetime',
     ];
     // Scopes
