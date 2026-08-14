@@ -8,11 +8,11 @@ use Illuminate\Http\Request;
 
 class VipController extends Controller
 {
-    public function index()
-    {
-        $vips = Vip::paginate(20);
-        return view('admin.vips.index', compact('vips'));
-    }
+   public function index()
+{
+    $vips = Vip::orderBy('price')->paginate(20);
+    return view('admin.vips.index', compact('vips'));
+}
 
     public function create()
     {
