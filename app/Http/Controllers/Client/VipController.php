@@ -11,10 +11,10 @@ use Illuminate\Http\Request;
 class VipController extends Controller
 {
     public function plans()
-    {
-        $vips = Vip::where('is_active', true)->paginate(20);
-        return view('client.vips.index', compact('vips'));
-    }
+{
+    $vips = Vip::where('is_active', true)->orderBy('price')->paginate(20);
+    return view('client.vips.index', compact('vips'));
+}
 
     public function mine()
     {
