@@ -1,31 +1,31 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\VipController as AdminVipController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\DepositController as AdminDepositController;
-use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
-use App\Http\Controllers\Admin\PaymentMethodController as AdminPaymentMethodController;
 use App\Http\Controllers\Admin\ExchangeRateController as AdminExchangeRateController;
-use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
-use App\Http\Controllers\Admin\ReferralController as AdminReferralController;
 use App\Http\Controllers\Admin\LuckyWheelSegmentController as AdminLuckyWheelSegmentController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\PaymentMethodController as AdminPaymentMethodController;
+use App\Http\Controllers\Admin\ReferralController as AdminReferralController;
 use App\Http\Controllers\Admin\SponsorTierController as AdminSponsorTierController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\VipController as AdminVipController;
+use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
 use App\Http\Controllers\Client\AuthController as ClientAuthController;
-use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
-use App\Http\Controllers\Client\VipController as ClientVipController;
-use App\Http\Controllers\Client\DepositController as ClientDepositController;
-use App\Http\Controllers\Client\WithdrawalController as ClientWithdrawalController;
 use App\Http\Controllers\Client\CheckInController as ClientCheckInController;
-use App\Http\Controllers\Client\ReferralController as ClientReferralController;
+use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
+use App\Http\Controllers\Client\DepositController as ClientDepositController;
+use App\Http\Controllers\Client\EarningsSimulatorController as ClientEarningsSimulatorController;
+use App\Http\Controllers\Client\GuideController as ClientGuideController;
+use App\Http\Controllers\Client\LuckyWheelController as ClientLuckyWheelController;
 use App\Http\Controllers\Client\NotificationController as ClientNotificationController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
-use App\Http\Controllers\Client\EarningsSimulatorController as ClientEarningsSimulatorController;
-use App\Http\Controllers\Client\LuckyWheelController as ClientLuckyWheelController;
-use App\Http\Controllers\Client\GuideController as ClientGuideController;
+use App\Http\Controllers\Client\ReferralController as ClientReferralController;
+use App\Http\Controllers\Client\VipController as ClientVipController;
+use App\Http\Controllers\Client\WithdrawalController as ClientWithdrawalController;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
 
 // Public homepage
 Route::get('/', function () {
@@ -126,6 +126,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     // Exchange Rates
     Route::get('/exchange-rates', [AdminExchangeRateController::class, 'index'])->name('exchange-rates.index');
     Route::post('/exchange-rates', [AdminExchangeRateController::class, 'store'])->name('exchange-rates.store');
+    Route::get('/exchange-rates/{exchangeRate}/edit', [AdminExchangeRateController::class, 'edit'])->name('exchange-rates.edit');
     Route::put('/exchange-rates/{exchangeRate}', [AdminExchangeRateController::class, 'update'])->name('exchange-rates.update');
     Route::delete('/exchange-rates/{exchangeRate}', [AdminExchangeRateController::class, 'destroy'])->name('exchange-rates.destroy');
 
@@ -154,7 +155,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::post('/users/{user}/update-password', [AdminUserController::class, 'updatePassword'])->name('users.updatePassword');
 });
 
-
 Route::get('/run-profits-cron-secure-9x27', function () {
     abort_unless(
         hash_equals(env('CRON_SECRET_TOKEN', ''), (string) request('token')),
@@ -166,8 +166,8 @@ Route::get('/run-profits-cron-secure-9x27', function () {
     Artisan::call('daily:process-gains');
 
     return response()->json([
-        'status'  => 'success',
+        'status' => 'success',
         'message' => 'Daily gains processed.',
-        'output'  => Artisan::output(),
+        'output' => Artisan::output(),
     ]);
 });

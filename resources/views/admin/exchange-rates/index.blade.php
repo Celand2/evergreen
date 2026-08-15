@@ -15,7 +15,7 @@
     <h3 class="text-xl font-bold mb-4">Add Exchange Rate</h3>
     <form action="{{ route('admin.exchange-rates.store') }}" method="POST">
         @csrf
-        <div class="grid grid-cols-3 gap-4 mb-4">
+        <div class="grid grid-cols-4 gap-4 mb-4">
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Currency (3 letters)</label>
                 <input type="text" name="currency" maxlength="3" required
@@ -24,6 +24,11 @@
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Rate to USD</label>
                 <input type="number" name="rate_to_usd" step="0.000001" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Date</label>
+                <input type="date" name="date" value="{{ today()->format('Y-m-d') }}" required
                     class="w-full px-3 py-2 border border-gray-300 rounded">
             </div>
             <div>
@@ -62,6 +67,7 @@
                         </span>
                     </td>
                     <td class="px-4 py-2">
+                        <a href="{{ route('admin.exchange-rates.edit', $rate) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
                         <form action="{{ route('admin.exchange-rates.update', $rate) }}" method="POST" class="inline">
                             @csrf
                             @method('PUT')
