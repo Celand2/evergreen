@@ -16,8 +16,8 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
-                    <label for="currency" class="block text-gray-700 text-sm font-bold mb-2">Currency (3 letters)</label>
-                    <input id="currency" type="text" name="currency" value="{{ old('currency', $exchangeRate->currency) }}" maxlength="3" required class="w-full px-3 py-2 border border-gray-300 rounded">
+                    <label for="currency" class="block text-gray-700 text-sm font-bold mb-2">Currency (5 letters)</label>
+                    <input id="currency" type="text" name="currency" value="{{ old('currency', $exchangeRate->currency) }}" maxlength="5" required class="w-full px-3 py-2 border border-gray-300 rounded">
                 </div>
                 <div>
                     <label for="rate_to_usd" class="block text-gray-700 text-sm font-bold mb-2">Rate to USD</label>
