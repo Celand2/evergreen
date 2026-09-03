@@ -18,7 +18,7 @@ class ExchangeRateController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'currency' => ['required', 'string', 'size:3'],
+            'currency' => ['required', 'string', 'max:5'],
             'rate_to_usd' => ['required', 'numeric', 'min:0'],
             'date' => ['required', 'date'],
             'is_active' => ['boolean'],
@@ -40,7 +40,7 @@ class ExchangeRateController extends Controller
         ]);
 
         $validated = $request->validate([
-            'currency' => ['required', 'string', 'size:3'],
+            'currency' => ['required', 'string', 'max:5'],
             'rate_to_usd' => ['required', 'numeric', 'min:0'],
             'date' => ['required', 'date'],
             'is_active' => ['boolean'],
